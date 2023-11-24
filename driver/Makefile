@@ -1,5 +1,5 @@
 KERNEL_SOURCE = /lib/modules/$(shell uname -r)/build
-MOD_NAME = test
+MOD_NAME = i2c_lucas
 
 # Converts a module object in LKM
 obj-m += src/$(MOD_NAME).o
