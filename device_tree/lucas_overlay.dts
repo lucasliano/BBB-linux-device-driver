@@ -1,0 +1,37 @@
+/dts-v1/;   // Version
+/plugin/;   // Needed to indicate that this is an OVERLAY, and not a raw device tree.
+
+&{/chosen/overlays} {
+    lliano_overlay_dtb = "lucas_overlay.dts";
+    lliano_overlay_dtb_timestamp = "Fri Nov  24 15:52:05 2023";
+};
+
+&{/ocp/interconnect@48000000/segment@100000/target-module@9c000} {
+    
+    i2c@0 {
+        status = "disabled";    // Deshabilito el i2c2 por default.
+    };
+
+    // Me creo mi propio i2c
+    i2c-lliano@0 {
+        // Valores importantes
+        #address-cells = <0x01>;    // Cuantas address tiene el reg de los hijos
+        #size-cells = <0x00>;       // Cuantos sizes tiene el reg de los hijos
+        compatible = "lliano,i2c";
+        status = "okay";
+        
+
+        // Propiedades de interes
+        clock-frequency = <0x186a0>;        // f = 400kHz
+        pinmux = <&am33xx_pinmux>;          // phandle to pin mux
+        pins = <0x154 0x32 0x150 0x32>;     // <PIN_OFFSET PIN_MODE>
+
+
+        // Dispositivos dentro del bus
+        mpu6050@68 {
+            compatible = "lliano,mpu6050";
+            reg = <0x68>;
+            status = "okay";
+        };
+    };
+};
