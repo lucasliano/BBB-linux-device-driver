@@ -6,6 +6,16 @@
     lliano_overlay_dtb_timestamp = "Fri Nov  24 15:52:05 2023";
 };
 
+&am33xx_pinmux {
+    pinmux_P9_17_default_pin {
+        pinctrl-single,pins = <0x15c 0x32>;
+    };
+
+    pinmux_P9_18_default_pin {
+        pinctrl-single,pins = <0x158 0x32>;
+    };
+};
+
 &{/ocp/interconnect@48000000/segment@100000/target-module@9c000} {
     
     i2c@0 {

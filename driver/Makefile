@@ -1,5 +1,6 @@
 KERNEL_SOURCE = /lib/modules/$(shell uname -r)/build
 MOD_NAME = i2c_lucas
+DEVICE_NAME = i2c_lliano
 
 # Converts a module object in LKM
 obj-m += src/$(MOD_NAME).o
@@ -30,7 +31,7 @@ rmmod:
 
 #muestra los mensajes (dmesg), en el ejemplo todos los printk imprimen el nombre del archivo
 dmesg:
-	dmesg | grep $(MOD_NAME) 
+	dmesg | grep $(DEVICE_NAME) 
 
 awk:
 	cat /proc/devices | grep $(MOD_NAME)
