@@ -3,7 +3,7 @@
 
 &{/chosen/overlays} {
     lliano_overlay_dtb = "lucas_overlay.dts";
-    lliano_overlay_dtb_timestamp = "Fri Nov  24 15:52:05 2023";
+    lliano_overlay_dtb_timestamp = "Wed Nov  29 15:52:05 2023";
 };
 
 &am33xx_pinmux {
@@ -18,6 +18,11 @@
 
 &{/ocp/interconnect@48000000/segment@100000/target-module@9c000} {
     
+    // Repetimos estas dos configuraciones para ahorrarnos problemas 
+    // en el reg cuando compilamos.
+    #address-cells = <0x01>;
+    #size-cells = <0x01>;
+
     i2c@0 {
         status = "disabled";    // Deshabilito el i2c2 por default.
     };
@@ -30,12 +35,20 @@
         compatible = "lliano,i2c";
         status = "okay";
         
-
-        // Propiedades de interes
-        clock-frequency = <0x186a0>;        // f = 400kHz
+        // Nico
         pinmux = <&am33xx_pinmux>;          // phandle to pin mux
         pins = <0x154 0x32 0x150 0x32>;     // <PIN_OFFSET PIN_MODE>
+        int-clock-frequency = <12000000>;   // internal clock frequency 12MHz
 
+        // Default
+        reg = <0x00 0x1000>;
+        interrupts = <0x1e>;
+        pinctrl-names = "default";
+        pinctrl-0;
+        clock-frequency = <0x186a0>;        // f = 400kHz
+        symlink = "bone/i2c/2";
+
+        
 
         // Dispositivos dentro del bus
         mpu6050@68 {

@@ -7,3 +7,4 @@
 *.dtb
 *.dtbo
 *.mod.c
+.vscode/

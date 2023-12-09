@@ -1,37 +1,42 @@
 KERNEL_SOURCE = /lib/modules/$(shell uname -r)/build
+DRIVER_NAME = i2c_lliano
 MOD_NAME = i2c_lucas
-DEVICE_NAME = i2c_lliano
 
 # Converts a module object in LKM
-obj-m += src/$(MOD_NAME).o
+obj-m += $(MOD_NAME).o
+EXTRA_CFLAGS := -I$(src)/inc
 
-#compila el modulo haciendo una llamada al Makefile que esta en '/lib/modules/$(shell uname -r)/build'
+$(MOD_NAME)-objs := src/lucas_lkm.o src/i2c.o src/char_device.o src/MPU6050.o
+
+
+
+# Compila el modulo haciendo una llamada al Makefile que esta en '/lib/modules/$(shell uname -r)/build'
 all: softclean build insmod
 
 build:
 	make -C ${KERNEL_SOURCE} M=${PWD} modules
 
-#limpia todos los archivos objetos
+# Limpia todos los archivos objetos
 softclean:
 	make -C ${KERNEL_SOURCE} M=${PWD} clean
 
 clean: rmmod softclean
 
-#revisa si el modulo esta instalado
+# Revisa si el modulo esta instalado
 cat:
 	cat /proc/modules | grep $(MOD_NAME)
 
-#instala el modulo
+# Instala el modulo
 insmod:
-	sudo insmod src/$(MOD_NAME).ko
+	sudo insmod $(MOD_NAME).ko
 
-#desinstala el modulo
+# Desinstala el modulo
 rmmod:
-	sudo rmmod src/$(MOD_NAME).ko
+	sudo rmmod $(MOD_NAME).ko
 
-#muestra los mensajes (dmesg), en el ejemplo todos los printk imprimen el nombre del archivo
+# Muestra los mensajes (dmesg), en el ejemplo todos los printk imprimen el nombre del archivo
 dmesg:
-	dmesg | grep $(DEVICE_NAME) 
+	dmesg | grep $(DRIVER_NAME) 
 
 awk:
 	cat /proc/devices | grep $(MOD_NAME)
@@ -40,7 +45,7 @@ tail:
 	tail -f /var/log/syslog
 
 info:
-	modinfo src/$(MOD_NAME).ko
+	modinfo $(MOD_NAME).ko
 
 dev:
 	ls -l /dev/	| grep $(MOD_NAME)
