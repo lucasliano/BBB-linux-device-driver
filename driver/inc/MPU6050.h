@@ -38,10 +38,9 @@ THE SOFTWARE.
 ===============================================
 */
 
-#ifndef __MPU6050_H_
-#define __MPU6050_H_
+#ifndef _MPU6050_H_
+#define _MPU6050_H_
 
-#include <linux/types.h>
 #include "i2c.h"
 
 #if ((defined MPU6050_INCLUDE_DMP_MOTIONAPPS20) || (defined MPU6050_INCLUDE_DMP_MOTIONAPPS41))
@@ -404,392 +403,388 @@ THE SOFTWARE.
 
 // note: DMP code memory blocks defined at end of header file
 
-
 // CUSTOM
-int mpu6050_init(struct platform_device * i2c_plat_dev);
-void mpu6050_deinit(void);
-
-
+int MPU6050_init(struct platform_device * i2c_plat_dev);
+void MPU6050_deinit(void);
 
 typedef struct MPU6050_t {
-    unsigned char devAddr;
-    unsigned char buffer[14];
+    uint8_t devAddr;
+    uint8_t buffer[14];
 } MPU6050_t;
 
-void MPU6050(unsigned char address);
-int MPU6050_testConnection(void);
+void MPU6050(uint8_t address);
+
+void MPU6050_initialize(void);
+bool MPU6050_testConnection(void);
+
+// AUX_VDDIO register
+uint8_t MPU6050_getAuxVDDIOLevel(void);
+void MPU6050_setAuxVDDIOLevel(uint8_t level);
+
+// SMPLRT_DIV register
+uint8_t MPU6050_getRate(void);
+void MPU6050_setRate(uint8_t rate);
+
+// CONFIG register
+uint8_t MPU6050_getExternalFrameSync(void);
+void MPU6050_setExternalFrameSync(uint8_t sync);
+uint8_t MPU6050_getDLPFMode(void);
+void MPU6050_setDLPFMode(uint8_t bandwidth);
+
+// GYRO_CONFIG register
+uint8_t MPU6050_getFullScaleGyroRange(void);
+void MPU6050_setFullScaleGyroRange(uint8_t range);
+
+// ACCEL_CONFIG register
+bool MPU6050_getAccelXSelfTest(void);
+void MPU6050_setAccelXSelfTest(bool enabled);
+bool MPU6050_getAccelYSelfTest(void);
+void MPU6050_setAccelYSelfTest(bool enabled);
+bool MPU6050_getAccelZSelfTest(void);
+void MPU6050_setAccelZSelfTest(bool enabled);
+uint8_t MPU6050_getFullScaleAccelRange(void);
+void MPU6050_setFullScaleAccelRange(uint8_t range);
+uint8_t MPU6050_getDHPFMode(void);
+void MPU6050_setDHPFMode(uint8_t mode);
+
+// FF_THR register
+uint8_t MPU6050_getFreefallDetectionThreshold(void);
+void MPU6050_setFreefallDetectionThreshold(uint8_t threshold);
+
+// FF_DUR register
+uint8_t MPU6050_getFreefallDetectionDuration(void);
+void MPU6050_setFreefallDetectionDuration(uint8_t duration);
+
+// MOT_THR register
+uint8_t MPU6050_getMotionDetectionThreshold(void);
+void MPU6050_setMotionDetectionThreshold(uint8_t threshold);
+
+// MOT_DUR register
+uint8_t MPU6050_getMotionDetectionDuration(void);
+void MPU6050_setMotionDetectionDuration(uint8_t duration);
+
+// ZRMOT_THR register
+uint8_t MPU6050_getZeroMotionDetectionThreshold(void);
+void MPU6050_setZeroMotionDetectionThreshold(uint8_t threshold);
+
+// ZRMOT_DUR register
+uint8_t MPU6050_getZeroMotionDetectionDuration(void);
+void MPU6050_setZeroMotionDetectionDuration(uint8_t duration);
+
+// FIFO_EN register
+bool MPU6050_getTempFIFOEnabled(void);
+void MPU6050_setTempFIFOEnabled(bool enabled);
+bool MPU6050_getXGyroFIFOEnabled(void);
+void MPU6050_setXGyroFIFOEnabled(bool enabled);
+bool MPU6050_getYGyroFIFOEnabled(void);
+void MPU6050_setYGyroFIFOEnabled(bool enabled);
+bool MPU6050_getZGyroFIFOEnabled(void);
+void MPU6050_setZGyroFIFOEnabled(bool enabled);
+bool MPU6050_getAccelFIFOEnabled(void);
+void MPU6050_setAccelFIFOEnabled(bool enabled);
+bool MPU6050_getSlave2FIFOEnabled(void);
+void MPU6050_setSlave2FIFOEnabled(bool enabled);
+bool MPU6050_getSlave1FIFOEnabled(void);
+void MPU6050_setSlave1FIFOEnabled(bool enabled);
+bool MPU6050_getSlave0FIFOEnabled(void);
+void MPU6050_setSlave0FIFOEnabled(bool enabled);
+
+// I2C_MST_CTRL register
+bool MPU6050_getMultiMasterEnabled(void);
+void MPU6050_setMultiMasterEnabled(bool enabled);
+bool MPU6050_getWaitForExternalSensorEnabled(void);
+void MPU6050_setWaitForExternalSensorEnabled(bool enabled);
+bool MPU6050_getSlave3FIFOEnabled(void);
+void MPU6050_setSlave3FIFOEnabled(bool enabled);
+bool MPU6050_getSlaveReadWriteTransitionEnabled(void);
+void MPU6050_setSlaveReadWriteTransitionEnabled(bool enabled);
+uint8_t MPU6050_getMasterClockSpeed(void);
+void MPU6050_setMasterClockSpeed(uint8_t speed);
+
+// I2C_SLV* registers (Slave 0-3)
+uint8_t MPU6050_getSlaveAddress(uint8_t num);
+void MPU6050_setSlaveAddress(uint8_t num, uint8_t address);
+uint8_t MPU6050_getSlaveRegister(uint8_t num);
+void MPU6050_setSlaveRegister(uint8_t num, uint8_t reg);
+bool MPU6050_getSlaveEnabled(uint8_t num);
+void MPU6050_setSlaveEnabled(uint8_t num, bool enabled);
+bool MPU6050_getSlaveWordByteSwap(uint8_t num);
+void MPU6050_setSlaveWordByteSwap(uint8_t num, bool enabled);
+bool MPU6050_getSlaveWriteMode(uint8_t num);
+void MPU6050_setSlaveWriteMode(uint8_t num, bool mode);
+bool MPU6050_getSlaveWordGroupOffset(uint8_t num);
+void MPU6050_setSlaveWordGroupOffset(uint8_t num, bool enabled);
+uint8_t MPU6050_getSlaveDataLength(uint8_t num);
+void MPU6050_setSlaveDataLength(uint8_t num, uint8_t length);
+
+// I2C_SLV* registers (Slave 4)
+uint8_t MPU6050_getSlave4Address(void);
+void MPU6050_setSlave4Address(uint8_t address);
+uint8_t MPU6050_getSlave4Register(void);
+void MPU6050_setSlave4Register(uint8_t reg);
+void MPU6050_setSlave4OutputByte(uint8_t data);
+bool MPU6050_getSlave4Enabled(void);
+void MPU6050_setSlave4Enabled(bool enabled);
+bool MPU6050_getSlave4InterruptEnabled(void);
+void MPU6050_setSlave4InterruptEnabled(bool enabled);
+bool MPU6050_getSlave4WriteMode(void);
+void MPU6050_setSlave4WriteMode(bool mode);
+uint8_t MPU6050_getSlave4MasterDelay(void);
+void MPU6050_setSlave4MasterDelay(uint8_t delay);
+uint8_t MPU6050_getSlate4InputByte(void);
+
+// I2C_MST_STATUS register
+bool MPU6050_getPassthroughStatus(void);
+bool MPU6050_getSlave4IsDone(void);
+bool MPU6050_getLostArbitration(void);
+bool MPU6050_getSlave4Nack(void);
+bool MPU6050_getSlave3Nack(void);
+bool MPU6050_getSlave2Nack(void);
+bool MPU6050_getSlave1Nack(void);
+bool MPU6050_getSlave0Nack(void);
+
+// INT_PIN_CFG register
+bool MPU6050_getInterruptMode(void);
+void MPU6050_setInterruptMode(bool mode);
+bool MPU6050_getInterruptDrive(void);
+void MPU6050_setInterruptDrive(bool drive);
+bool MPU6050_getInterruptLatch(void);
+void MPU6050_setInterruptLatch(bool latch);
+bool MPU6050_getInterruptLatchClear(void);
+void MPU6050_setInterruptLatchClear(bool clear);
+bool MPU6050_getFSyncInterruptLevel(void);
+void MPU6050_setFSyncInterruptLevel(bool level);
+bool MPU6050_getFSyncInterruptEnabled(void);
+void MPU6050_setFSyncInterruptEnabled(bool enabled);
+bool MPU6050_getI2CBypassEnabled(void);
+void MPU6050_setI2CBypassEnabled(bool enabled);
+bool MPU6050_getClockOutputEnabled(void);
+void MPU6050_setClockOutputEnabled(bool enabled);
+
+// INT_ENABLE register
+uint8_t MPU6050_getIntEnabled(void);
+void MPU6050_setIntEnabled(uint8_t enabled);
+bool MPU6050_getIntFreefallEnabled(void);
+void MPU6050_setIntFreefallEnabled(bool enabled);
+bool MPU6050_getIntMotionEnabled(void);
+void MPU6050_setIntMotionEnabled(bool enabled);
+bool MPU6050_getIntZeroMotionEnabled(void);
+void MPU6050_setIntZeroMotionEnabled(bool enabled);
+bool MPU6050_getIntFIFOBufferOverflowEnabled(void);
+void MPU6050_setIntFIFOBufferOverflowEnabled(bool enabled);
+bool MPU6050_getIntI2CMasterEnabled(void);
+void MPU6050_setIntI2CMasterEnabled(bool enabled);
+bool MPU6050_getIntDataReadyEnabled(void);
+void MPU6050_setIntDataReadyEnabled(bool enabled);
+
+// INT_STATUS register
+uint8_t MPU6050_getIntStatus(void);
+bool MPU6050_getIntFreefallStatus(void);
+bool MPU6050_getIntMotionStatus(void);
+bool MPU6050_getIntZeroMotionStatus(void);
+bool MPU6050_getIntFIFOBufferOverflowStatus(void);
+bool MPU6050_getIntI2CMasterStatus(void);
+bool MPU6050_getIntDataReadyStatus(void);
+
+// ACCEL_*OUT_* registers
+void MPU6050_getMotion9(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz, int16_t* mx, int16_t* my, int16_t* mz);
+void MPU6050_getMotion6(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz);
+void MPU6050_getAcceleration(int16_t* x, int16_t* y, int16_t* z);
+int16_t MPU6050_getAccelerationX(void);
+int16_t MPU6050_getAccelerationY(void);
+int16_t MPU6050_getAccelerationZ(void);
+
+// TEMP_OUT_* registers
+int16_t MPU6050_getTemperature(void);
+
+// GYRO_*OUT_* registers
+void MPU6050_getRotation(int16_t* x, int16_t* y, int16_t* z);
+int16_t MPU6050_getRotationX(void);
+int16_t MPU6050_getRotationY(void);
+int16_t MPU6050_getRotationZ(void);
+
+// EXT_SENS_DATA_* registers
+uint8_t MPU6050_getExternalSensorByte(int position);
+uint16_t MPU6050_getExternalSensorWord(int position);
+uint32_t getExternalSensorDWord(int position);
+
+// MOT_DETECT_STATUS register
+bool MPU6050_getXNegMotionDetected(void);
+bool MPU6050_getXPosMotionDetected(void);
+bool MPU6050_getYNegMotionDetected(void);
+bool MPU6050_getYPosMotionDetected(void);
+bool MPU6050_getZNegMotionDetected(void);
+bool MPU6050_getZPosMotionDetected(void);
+bool MPU6050_getZeroMotionDetected(void);
+
+// I2C_SLV*_DO register
+void MPU6050_setSlaveOutputByte(uint8_t num, uint8_t data);
+
+// I2C_MST_DELAY_CTRL register
+bool MPU6050_getExternalShadowDelayEnabled(void);
+void MPU6050_setExternalShadowDelayEnabled(bool enabled);
+bool MPU6050_getSlaveDelayEnabled(uint8_t num);
+void MPU6050_setSlaveDelayEnabled(uint8_t num, bool enabled);
+
+// SIGNAL_PATH_RESET register
+void MPU6050_resetGyroscopePath(void);
+void MPU6050_resetAccelerometerPath(void);
+void MPU6050_resetTemperaturePath(void);
+
+// MOT_DETECT_CTRL register
+uint8_t MPU6050_getAccelerometerPowerOnDelay(void);
+void MPU6050_setAccelerometerPowerOnDelay(uint8_t delay);
+uint8_t MPU6050_getFreefallDetectionCounterDecrement(void);
+void MPU6050_setFreefallDetectionCounterDecrement(uint8_t decrement);
+uint8_t MPU6050_getMotionDetectionCounterDecrement(void);
+void MPU6050_setMotionDetectionCounterDecrement(uint8_t decrement);
+
+// USER_CTRL register
+bool MPU6050_getFIFOEnabled(void);
+void MPU6050_setFIFOEnabled(bool enabled);
+bool MPU6050_getI2CMasterModeEnabled(void);
+void MPU6050_setI2CMasterModeEnabled(bool enabled);
+void MPU6050_switchSPIEnabled(bool enabled);
+void MPU6050_resetFIFO(void);
+void MPU6050_resetI2CMaster(void);
+void MPU6050_resetSensors(void);
+
+// PWR_MGMT_1 register
+void MPU6050_reset(void);
+bool MPU6050_getSleepEnabled(void);
+void MPU6050_setSleepEnabled(uint8_t enabled);
+bool MPU6050_getWakeCycleEnabled(void);
+void MPU6050_setWakeCycleEnabled(bool enabled);
+bool MPU6050_getTempSensorEnabled(void);
+void MPU6050_setTempSensorEnabled(bool enabled);
+uint8_t MPU6050_getClockSource(void);
+void MPU6050_setClockSource(uint8_t source);
+
+// PWR_MGMT_2 register
+uint8_t MPU6050_getWakeFrequency(void);
+void MPU6050_setWakeFrequency(uint8_t frequency);
+bool MPU6050_getStandbyXAccelEnabled(void);
+void MPU6050_setStandbyXAccelEnabled(bool enabled);
+bool MPU6050_getStandbyYAccelEnabled(void);
+void MPU6050_setStandbyYAccelEnabled(bool enabled);
+bool MPU6050_getStandbyZAccelEnabled(void);
+void MPU6050_setStandbyZAccelEnabled(bool enabled);
+bool MPU6050_getStandbyXGyroEnabled(void);
+void MPU6050_setStandbyXGyroEnabled(bool enabled);
+bool MPU6050_getStandbyYGyroEnabled(void);
+void MPU6050_setStandbyYGyroEnabled(bool enabled);
+bool MPU6050_getStandbyZGyroEnabled(void);
+void MPU6050_setStandbyZGyroEnabled(bool enabled);
+
+// FIFO_COUNT_* registers
+uint16_t MPU6050_getFIFOCount(void);
+
+// FIFO_R_W register
+uint8_t MPU6050_getFIFOByte(void);
+void MPU6050_setFIFOByte(uint8_t data);
+void MPU6050_getFIFOBytes(uint8_t *data, uint8_t length);
 
 // WHO_AM_I register
-unsigned char MPU6050_getDeviceID(void);
-// void MPU6050_setDeviceID(unsigned char id);
+uint8_t MPU6050_getDeviceID(void);
+void MPU6050_setDeviceID(uint8_t id);
 
+// ======== UNDOCUMENTED/DMP REGISTERS/METHODS ========
 
-// void MPU6050_initialize();
+// XG_OFFS_TC register
+uint8_t MPU6050_getOTPBankValid(void);
+void MPU6050_setOTPBankValid(bool enabled);
+int8_t getXGyroOffsetTC(void);
+void MPU6050_setXGyroOffsetTC(int8_t offset);
 
-// // AUX_VDDIO register
-// unsigned char MPU6050_getAuxVDDIOLevel();
-// void MPU6050_setAuxVDDIOLevel(unsigned char level);
+// YG_OFFS_TC register
+int8_t getYGyroOffsetTC(void);
+void MPU6050_setYGyroOffsetTC(int8_t offset);
 
-// // SMPLRT_DIV register
-// unsigned char MPU6050_getRate();
-// void MPU6050_setRate(unsigned char rate);
+// ZG_OFFS_TC register
+int8_t getZGyroOffsetTC(void);
+void MPU6050_setZGyroOffsetTC(int8_t offset);
 
-// // CONFIG register
-// unsigned char MPU6050_getExternalFrameSync();
-// void MPU6050_setExternalFrameSync(unsigned char sync);
-// unsigned char MPU6050_getDLPFMode();
-// void MPU6050_setDLPFMode(unsigned char bandwidth);
+// X_FINE_GAIN register
+int8_t getXFineGain(void);
+void MPU6050_setXFineGain(int8_t gain);
 
-// // GYRO_CONFIG register
-// unsigned char MPU6050_getFullScaleGyroRange();
-// void MPU6050_setFullScaleGyroRange(unsigned char range);
+// Y_FINE_GAIN register
+int8_t getYFineGain(void);
+void MPU6050_setYFineGain(int8_t gain);
 
-// // ACCEL_CONFIG register
-// char MPU6050_getAccelXSelfTest();
-// void MPU6050_setAccelXSelfTest(char enabled);
-// char MPU6050_getAccelYSelfTest();
-// void MPU6050_setAccelYSelfTest(char enabled);
-// char MPU6050_getAccelZSelfTest();
-// void MPU6050_setAccelZSelfTest(char enabled);
-// unsigned char MPU6050_getFullScaleAccelRange();
-// void MPU6050_setFullScaleAccelRange(unsigned char range);
-// unsigned char MPU6050_getDHPFMode();
-// void MPU6050_setDHPFMode(unsigned char mode);
+// Z_FINE_GAIN register
+int8_t getZFineGain(void);
+void MPU6050_setZFineGain(int8_t gain);
 
-// // FF_THR register
-// unsigned char MPU6050_getFreefallDetectionThreshold();
-// void MPU6050_setFreefallDetectionThreshold(unsigned char threshold);
+// XA_OFFS_* registers
+int16_t MPU6050_getXAccelOffset(void);
+void MPU6050_setXAccelOffset(int16_t offset);
 
-// // FF_DUR register
-// unsigned char MPU6050_getFreefallDetectionDuration();
-// void MPU6050_setFreefallDetectionDuration(unsigned char duration);
+// YA_OFFS_* register
+int16_t MPU6050_getYAccelOffset(void);
+void MPU6050_setYAccelOffset(int16_t offset);
 
-// // MOT_THR register
-// unsigned char MPU6050_getMotionDetectionThreshold();
-// void MPU6050_setMotionDetectionThreshold(unsigned char threshold);
+// ZA_OFFS_* register
+int16_t MPU6050_getZAccelOffset(void);
+void MPU6050_setZAccelOffset(int16_t offset);
 
-// // MOT_DUR register
-// unsigned char MPU6050_getMotionDetectionDuration();
-// void MPU6050_setMotionDetectionDuration(unsigned char duration);
+// XG_OFFS_USR* registers
+int16_t MPU6050_getXGyroOffset(void);
+void MPU6050_setXGyroOffset(int16_t offset);
 
-// // ZRMOT_THR register
-// unsigned char MPU6050_getZeroMotionDetectionThreshold();
-// void MPU6050_setZeroMotionDetectionThreshold(unsigned char threshold);
+// YG_OFFS_USR* register
+int16_t MPU6050_getYGyroOffset(void);
+void MPU6050_setYGyroOffset(int16_t offset);
 
-// // ZRMOT_DUR register
-// unsigned char MPU6050_getZeroMotionDetectionDuration();
-// void MPU6050_setZeroMotionDetectionDuration(unsigned char duration);
+// ZG_OFFS_USR* register
+int16_t MPU6050_getZGyroOffset(void);
+void MPU6050_setZGyroOffset(int16_t offset);
 
-// // FIFO_EN register
-// char MPU6050_getTempFIFOEnabled();
-// void MPU6050_setTempFIFOEnabled(char enabled);
-// char MPU6050_getXGyroFIFOEnabled();
-// void MPU6050_setXGyroFIFOEnabled(char enabled);
-// char MPU6050_getYGyroFIFOEnabled();
-// void MPU6050_setYGyroFIFOEnabled(char enabled);
-// char MPU6050_getZGyroFIFOEnabled();
-// void MPU6050_setZGyroFIFOEnabled(char enabled);
-// char MPU6050_getAccelFIFOEnabled();
-// void MPU6050_setAccelFIFOEnabled(char enabled);
-// char MPU6050_getSlave2FIFOEnabled();
-// void MPU6050_setSlave2FIFOEnabled(char enabled);
-// char MPU6050_getSlave1FIFOEnabled();
-// void MPU6050_setSlave1FIFOEnabled(char enabled);
-// char MPU6050_getSlave0FIFOEnabled();
-// void MPU6050_setSlave0FIFOEnabled(char enabled);
+// INT_ENABLE register (DMP functions)
+bool MPU6050_getIntPLLReadyEnabled(void);
+void MPU6050_setIntPLLReadyEnabled(bool enabled);
+bool MPU6050_getIntDMPEnabled(void);
+void MPU6050_setIntDMPEnabled(bool enabled);
 
-// // I2C_MST_CTRL register
-// char MPU6050_getMultiMasterEnabled();
-// void MPU6050_setMultiMasterEnabled(char enabled);
-// char MPU6050_getWaitForExternalSensorEnabled();
-// void MPU6050_setWaitForExternalSensorEnabled(char enabled);
-// char MPU6050_getSlave3FIFOEnabled();
-// void MPU6050_setSlave3FIFOEnabled(char enabled);
-// char MPU6050_getSlaveReadWriteTransitionEnabled();
-// void MPU6050_setSlaveReadWriteTransitionEnabled(char enabled);
-// unsigned char MPU6050_getMasterClockSpeed();
-// void MPU6050_setMasterClockSpeed(unsigned char speed);
+// DMP_INT_STATUS
+bool MPU6050_getDMPInt5Status(void);
+bool MPU6050_getDMPInt4Status(void);
+bool MPU6050_getDMPInt3Status(void);
+bool MPU6050_getDMPInt2Status(void);
+bool MPU6050_getDMPInt1Status(void);
+bool MPU6050_getDMPInt0Status(void);
 
-// // I2C_SLV* registers (Slave 0-3)
-// unsigned char MPU6050_getSlaveAddress(unsigned char num);
-// void MPU6050_setSlaveAddress(unsigned char num, unsigned char address);
-// unsigned char MPU6050_getSlaveRegister(unsigned char num);
-// void MPU6050_setSlaveRegister(unsigned char num, unsigned char reg);
-// char MPU6050_getSlaveEnabled(unsigned char num);
-// void MPU6050_setSlaveEnabled(unsigned char num, char enabled);
-// char MPU6050_getSlaveWordByteSwap(unsigned char num);
-// void MPU6050_setSlaveWordByteSwap(unsigned char num, char enabled);
-// char MPU6050_getSlaveWriteMode(unsigned char num);
-// void MPU6050_setSlaveWriteMode(unsigned char num, char mode);
-// char MPU6050_getSlaveWordGroupOffset(unsigned char num);
-// void MPU6050_setSlaveWordGroupOffset(unsigned char num, char enabled);
-// unsigned char MPU6050_getSlaveDataLength(unsigned char num);
-// void MPU6050_setSlaveDataLength(unsigned char num, unsigned char length);
+// INT_STATUS register (DMP functions)
+bool MPU6050_getIntPLLReadyStatus(void);
+bool MPU6050_getIntDMPStatus(void);
 
-// // I2C_SLV* registers (Slave 4)
-// unsigned char MPU6050_getSlave4Address();
-// void MPU6050_setSlave4Address(unsigned char address);
-// unsigned char MPU6050_getSlave4Register();
-// void MPU6050_setSlave4Register(unsigned char reg);
-// void MPU6050_setSlave4OutputByte(unsigned char data);
-// char MPU6050_getSlave4Enabled();
-// void MPU6050_setSlave4Enabled(char enabled);
-// char MPU6050_getSlave4InterruptEnabled();
-// void MPU6050_setSlave4InterruptEnabled(char enabled);
-// char MPU6050_getSlave4WriteMode();
-// void MPU6050_setSlave4WriteMode(char mode);
-// unsigned char MPU6050_getSlave4MasterDelay();
-// void MPU6050_setSlave4MasterDelay(unsigned char delay);
-// unsigned char MPU6050_getSlate4InputByte();
+// USER_CTRL register (DMP functions)
+bool MPU6050_getDMPEnabled(void);
+void MPU6050_setDMPEnabled(bool enabled);
+void MPU6050_resetDMP(void);
 
-// // I2C_MST_STATUS register
-// char MPU6050_getPassthroughStatus();
-// char MPU6050_getSlave4IsDone();
-// char MPU6050_getLostArbitration();
-// char MPU6050_getSlave4Nack();
-// char MPU6050_getSlave3Nack();
-// char MPU6050_getSlave2Nack();
-// char MPU6050_getSlave1Nack();
-// char MPU6050_getSlave0Nack();
+// BANK_SEL register
+void MPU6050_setMemoryBank(uint8_t bank, bool prefetchEnabled, bool userBank);
 
-// // INT_PIN_CFG register
-// char MPU6050_getInterruptMode();
-// void MPU6050_setInterruptMode(char mode);
-// char MPU6050_getInterruptDrive();
-// void MPU6050_setInterruptDrive(char drive);
-// char MPU6050_getInterruptLatch();
-// void MPU6050_setInterruptLatch(char latch);
-// char MPU6050_getInterruptLatchClear();
-// void MPU6050_setInterruptLatchClear(char clear);
-// char MPU6050_getFSyncInterruptLevel();
-// void MPU6050_setFSyncInterruptLevel(char level);
-// char MPU6050_getFSyncInterruptEnabled();
-// void MPU6050_setFSyncInterruptEnabled(char enabled);
-// char MPU6050_getI2CBypassEnabled();
-// void MPU6050_setI2CBypassEnabled(char enabled);
-// char MPU6050_getClockOutputEnabled();
-// void MPU6050_setClockOutputEnabled(char enabled);
+// MEM_START_ADDR register
+void MPU6050_setMemoryStartAddress(uint8_t address);
 
-// // INT_ENABLE register
-// unsigned char MPU6050_getIntEnabled();
-// void MPU6050_setIntEnabled(unsigned char enabled);
-// char MPU6050_getIntFreefallEnabled();
-// void MPU6050_setIntFreefallEnabled(char enabled);
-// char MPU6050_getIntMotionEnabled();
-// void MPU6050_setIntMotionEnabled(char enabled);
-// char MPU6050_getIntZeroMotionEnabled();
-// void MPU6050_setIntZeroMotionEnabled(char enabled);
-// char MPU6050_getIntFIFOBufferOverflowEnabled();
-// void MPU6050_setIntFIFOBufferOverflowEnabled(char enabled);
-// char MPU6050_getIntI2CMasterEnabled();
-// void MPU6050_setIntI2CMasterEnabled(char enabled);
-// char MPU6050_getIntDataReadyEnabled();
-// void MPU6050_setIntDataReadyEnabled(char enabled);
+// MEM_R_W register
+uint8_t MPU6050_readMemoryByte(void);
+void MPU6050_writeMemoryByte(uint8_t data);
+void MPU6050_readMemoryBlock(uint8_t *data, uint16_t dataSize, uint8_t bank, uint8_t address);
+//bool MPU6050_writeMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t bank, uint8_t address, bool verify, bool useProgMem);
+//bool MPU6050_writeProgMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t bank, uint8_t address, bool verify);
 
-// // INT_STATUS register
-// unsigned char MPU6050_getIntStatus();
-// char MPU6050_getIntFreefallStatus();
-// char MPU6050_getIntMotionStatus();
-// char MPU6050_getIntZeroMotionStatus();
-// char MPU6050_getIntFIFOBufferOverflowStatus();
-// char MPU6050_getIntI2CMasterStatus();
-// char MPU6050_getIntDataReadyStatus();
+//bool MPU6050_writeDMPConfigurationSet(const uint8_t *data, uint16_t dataSize, bool useProgMem);
+//bool MPU6050_writeProgDMPConfigurationSet(const uint8_t *data, uint16_t dataSize);
 
-// // ACCEL_*OUT_* registers
-// void MPU6050_getMotion9(int* ax, int* ay, int* az, int* gx, int* gy, int* gz, int* mx, int* my, int* mz);
-// void MPU6050_getMotion6(int* ax, int* ay, int* az, int* gx, int* gy, int* gz);
-// void MPU6050_getAcceleration(int* x, int* y, int* z);
-// int MPU6050_getAccelerationX();
-// int MPU6050_getAccelerationY();
-// int MPU6050_getAccelerationZ();
+// DMP_CFG_1 register
+uint8_t MPU6050_getDMPConfig1(void);
+void MPU6050_setDMPConfig1(uint8_t config);
 
-// // TEMP_OUT_* registers
-// int MPU6050_getTemperature();
+// DMP_CFG_2 register
+uint8_t MPU6050_getDMPConfig2(void);
+void MPU6050_setDMPConfig2(uint8_t config);
 
-// // GYRO_*OUT_* registers
-// void MPU6050_getRotation(int* x, int* y, int* z);
-// int MPU6050_getRotationX();
-// int MPU6050_getRotationY();
-// int MPU6050_getRotationZ();
-
-// // EXT_SENS_DATA_* registers
-// unsigned char MPU6050_getExternalSensorByte(int position);
-// uint MPU6050_getExternalSensorWord(int position);
-// uint32_t getExternalSensorDWord(int position);
-
-// // MOT_DETECT_STATUS register
-// char MPU6050_getXNegMotionDetected();
-// char MPU6050_getXPosMotionDetected();
-// char MPU6050_getYNegMotionDetected();
-// char MPU6050_getYPosMotionDetected();
-// char MPU6050_getZNegMotionDetected();
-// char MPU6050_getZPosMotionDetected();
-// char MPU6050_getZeroMotionDetected();
-
-// // I2C_SLV*_DO register
-// void MPU6050_setSlaveOutputByte(unsigned char num, unsigned char data);
-
-// // I2C_MST_DELAY_CTRL register
-// char MPU6050_getExternalShadowDelayEnabled();
-// void MPU6050_setExternalShadowDelayEnabled(char enabled);
-// char MPU6050_getSlaveDelayEnabled(unsigned char num);
-// void MPU6050_setSlaveDelayEnabled(unsigned char num, char enabled);
-
-// // SIGNAL_PATH_RESET register
-// void MPU6050_resetGyroscopePath();
-// void MPU6050_resetAccelerometerPath();
-// void MPU6050_resetTemperaturePath();
-
-// // MOT_DETECT_CTRL register
-// unsigned char MPU6050_getAccelerometerPowerOnDelay();
-// void MPU6050_setAccelerometerPowerOnDelay(unsigned char delay);
-// unsigned char MPU6050_getFreefallDetectionCounterDecrement();
-// void MPU6050_setFreefallDetectionCounterDecrement(unsigned char decrement);
-// unsigned char MPU6050_getMotionDetectionCounterDecrement();
-// void MPU6050_setMotionDetectionCounterDecrement(unsigned char decrement);
-
-// // USER_CTRL register
-// char MPU6050_getFIFOEnabled();
-// void MPU6050_setFIFOEnabled(char enabled);
-// char MPU6050_getI2CMasterModeEnabled();
-// void MPU6050_setI2CMasterModeEnabled(char enabled);
-// void MPU6050_switchSPIEnabled(char enabled);
-// void MPU6050_resetFIFO();
-// void MPU6050_resetI2CMaster();
-// void MPU6050_resetSensors();
-
-// // PWR_MGMT_1 register
-// void MPU6050_reset();
-// char MPU6050_getSleepEnabled();
-// void MPU6050_setSleepEnabled(char enabled);
-// char MPU6050_getWakeCycleEnabled();
-// void MPU6050_setWakeCycleEnabled(char enabled);
-// char MPU6050_getTempSensorEnabled();
-// void MPU6050_setTempSensorEnabled(char enabled);
-// unsigned char MPU6050_getClockSource();
-// void MPU6050_setClockSource(unsigned char source);
-
-// // PWR_MGMT_2 register
-// unsigned char MPU6050_getWakeFrequency();
-// void MPU6050_setWakeFrequency(unsigned char frequency);
-// char MPU6050_getStandbyXAccelEnabled();
-// void MPU6050_setStandbyXAccelEnabled(char enabled);
-// char MPU6050_getStandbyYAccelEnabled();
-// void MPU6050_setStandbyYAccelEnabled(char enabled);
-// char MPU6050_getStandbyZAccelEnabled();
-// void MPU6050_setStandbyZAccelEnabled(char enabled);
-// char MPU6050_getStandbyXGyroEnabled();
-// void MPU6050_setStandbyXGyroEnabled(char enabled);
-// char MPU6050_getStandbyYGyroEnabled();
-// void MPU6050_setStandbyYGyroEnabled(char enabled);
-// char MPU6050_getStandbyZGyroEnabled();
-// void MPU6050_setStandbyZGyroEnabled(char enabled);
-
-// // FIFO_COUNT_* registers
-// uint MPU6050_getFIFOCount();
-
-// // FIFO_R_W register
-// unsigned char MPU6050_getFIFOByte();
-// void MPU6050_setFIFOByte(unsigned char data);
-// void MPU6050_getFIFOBytes(unsigned char *data, unsigned char length);
-
-// // ======== UNDOCUMENTED/DMP REGISTERS/METHODS ========
-
-// // XG_OFFS_TC register
-// unsigned char MPU6050_getOTPBankValid();
-// void MPU6050_setOTPBankValid(char enabled);
-// signed char getXGyroOffsetTC();
-// void MPU6050_setXGyroOffsetTC(signed char offset);
-
-// // YG_OFFS_TC register
-// signed char getYGyroOffsetTC();
-// void MPU6050_setYGyroOffsetTC(signed char offset);
-
-// // ZG_OFFS_TC register
-// signed char getZGyroOffsetTC();
-// void MPU6050_setZGyroOffsetTC(signed char offset);
-
-// // X_FINE_GAIN register
-// signed char getXFineGain();
-// void MPU6050_setXFineGain(signed char gain);
-
-// // Y_FINE_GAIN register
-// signed char getYFineGain();
-// void MPU6050_setYFineGain(signed char gain);
-
-// // Z_FINE_GAIN register
-// signed char getZFineGain();
-// void MPU6050_setZFineGain(signed char gain);
-
-// // XA_OFFS_* registers
-// int MPU6050_getXAccelOffset();
-// void MPU6050_setXAccelOffset(int offset);
-
-// // YA_OFFS_* register
-// int MPU6050_getYAccelOffset();
-// void MPU6050_setYAccelOffset(int offset);
-
-// // ZA_OFFS_* register
-// int MPU6050_getZAccelOffset();
-// void MPU6050_setZAccelOffset(int offset);
-
-// // XG_OFFS_USR* registers
-// int MPU6050_getXGyroOffset();
-// void MPU6050_setXGyroOffset(int offset);
-
-// // YG_OFFS_USR* register
-// int MPU6050_getYGyroOffset();
-// void MPU6050_setYGyroOffset(int offset);
-
-// // ZG_OFFS_USR* register
-// int MPU6050_getZGyroOffset();
-// void MPU6050_setZGyroOffset(int offset);
-
-// // INT_ENABLE register (DMP functions)
-// char MPU6050_getIntPLLReadyEnabled();
-// void MPU6050_setIntPLLReadyEnabled(char enabled);
-// char MPU6050_getIntDMPEnabled();
-// void MPU6050_setIntDMPEnabled(char enabled);
-
-// // DMP_INT_STATUS
-// char MPU6050_getDMPInt5Status();
-// char MPU6050_getDMPInt4Status();
-// char MPU6050_getDMPInt3Status();
-// char MPU6050_getDMPInt2Status();
-// char MPU6050_getDMPInt1Status();
-// char MPU6050_getDMPInt0Status();
-
-// // INT_STATUS register (DMP functions)
-// char MPU6050_getIntPLLReadyStatus();
-// char MPU6050_getIntDMPStatus();
-
-// // USER_CTRL register (DMP functions)
-// char MPU6050_getDMPEnabled();
-// void MPU6050_setDMPEnabled(char enabled);
-// void MPU6050_resetDMP();
-
-// // BANK_SEL register
-// void MPU6050_setMemoryBank(unsigned char bank, char prefetchEnabled, char userBank);
-
-// // MEM_START_ADDR register
-// void MPU6050_setMemoryStartAddress(unsigned char address);
-
-// // MEM_R_W register
-// unsigned char MPU6050_readMemoryByte();
-// void MPU6050_writeMemoryByte(unsigned char data);
-// void MPU6050_readMemoryBlock(unsigned char *data, uint dataSize, unsigned char bank, unsigned char address);
-// //char MPU6050_writeMemoryBlock(const unsigned char *data, uint dataSize, unsigned char bank, unsigned char address, char verify, char useProgMem);
-// //char MPU6050_writeProgMemoryBlock(const unsigned char *data, uint dataSize, unsigned char bank, unsigned char address, char verify);
-
-// //char MPU6050_writeDMPConfigurationSet(const unsigned char *data, uint dataSize, char useProgMem);
-// //char MPU6050_writeProgDMPConfigurationSet(const unsigned char *data, uint dataSize);
-
-// // DMP_CFG_1 register
-// unsigned char MPU6050_getDMPConfig1();
-// void MPU6050_setDMPConfig1(unsigned char config);
-
-// // DMP_CFG_2 register
-// unsigned char MPU6050_getDMPConfig2();
-// void MPU6050_setDMPConfig2(unsigned char config);
-
-#endif /* __MPU6050_H_ */
+#endif /* _MPU6050_H_ */

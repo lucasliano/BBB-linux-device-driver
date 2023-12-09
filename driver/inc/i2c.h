@@ -114,15 +114,16 @@ int i2c_read_reg(char slave_address, char reg_address, char* read_buff);
 // PSC
 #define I2C_PSC_MASK            0x000000FF
 #define I2C_PSC_12MHZ           0x00000003 // divided by 3, 48MHz/4 = 12MHz (page4589)
+#define I2C_PSC_24MHZ           0x00000001 // divided by 1, 48MHz/1 = 24MHz (page4589)
 
 // SCLL
 #define I2C_SCLL_MASK           0x000000FF
-#define I2C_SCLL_400K           0x00000035 // tLOW = 1,25 US = (53+7)*(1/48MHz)
+#define I2C_SCLL_400K           0x00000017 // tLOW = 1,25 US = (23+7)*(2/48MHz)
 #define I2C_SCLL_100K           0x000000E9 // tLOW = 5 US = (233+7)+(1/48MHz)
 
 // SCLH
 #define I2C_SCLH_MASK           0x000000FF
-#define I2C_SCLH_400K           0x00000037 // THIGH = 1,25 uS = (55+5)*(1/48MHz)
+#define I2C_SCLH_400K           0x00000019 // THIGH = 1,25 uS = (25+5)*(1/48MHz)
 #define I2C_SCLH_100K           0x000000EB // THIGH = 5 us = (235+5)*(1/48MHz)
 
 #endif // _I2C_H

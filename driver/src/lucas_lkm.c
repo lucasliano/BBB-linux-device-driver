@@ -24,7 +24,7 @@ static int i2c_probe(struct platform_device * i2c_plat_dev)
         pr_warn("%s: PROBE - Error while running i2c_init().\n", DRIVER_NAME);
         goto i2c_error;
     }
-    if ((status = mpu6050_init(i2c_plat_dev)) != 0) {
+    if ((status = MPU6050_init(i2c_plat_dev)) != 0) {
         pr_warn("%s: PROBE - Error while running mpu6050_init().\n", DRIVER_NAME);
         goto mpu6050_error;
     }
@@ -34,7 +34,7 @@ static int i2c_probe(struct platform_device * i2c_plat_dev)
     // }
     return 0;
 
-    char_device_error: mpu6050_deinit();
+    char_device_error: MPU6050_deinit();
     mpu6050_error: i2c_deinit();
     i2c_error: return status;
 }
@@ -48,7 +48,7 @@ static int i2c_remove(struct platform_device * i2c_plat_dev)
 {
     pr_info("%s: REMOVE - Removing driver.. i2c_plat_dev->name = %s\n", DRIVER_NAME, i2c_plat_dev->name);
     char_device_remove();
-    mpu6050_deinit();
+    MPU6050_deinit();
     i2c_deinit();
     return 0;
 }

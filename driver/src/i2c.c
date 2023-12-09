@@ -50,7 +50,6 @@ static void __wakeup(void)
     aux = (unsigned int)ioread32((unsigned int *) aux); 
     aux |= 0x02;
     iowrite32(aux, clk_ptr + IDCM_PER_I2C2_CLKCTRL);
-    pr_info("%s: Waking UP I2C2..", DRIVER_NAME);
     while(ioread32(clk_ptr + IDCM_PER_I2C2_CLKCTRL) != CM_PER_I2C2_CLKCTRL_ENABLE);
 }
 
@@ -96,7 +95,6 @@ static irqreturn_t i2c_isr(int irq_number, void *dev_id)
     if (irq & I2C_IRQ_XRDY) // TX
     { 
         // Loads data register
-        pr_info("XRDY HANDLER.\n");
         iowrite32(data_i2c.buff_tx[data_i2c.pos_tx++], i2c_ptr + I2C_REG_DATA);
     
         if(data_i2c.buff_tx_len == data_i2c.pos_tx)
@@ -110,8 +108,6 @@ static irqreturn_t i2c_isr(int irq_number, void *dev_id)
 
     if (irq & I2C_IRQ_RRDY)  // RX
     {
-        pr_info("RRDY HANDLER.\n");
-
         // Saves received data in buffer
         data_i2c.buff_rx[data_i2c.pos_rx++] = ioread32(i2c_ptr + I2C_REG_DATA);
 
@@ -125,9 +121,8 @@ static irqreturn_t i2c_isr(int irq_number, void *dev_id)
 
     }  
 
-    if (irq & I2C_IRQ_ARDY) { // ACCESS READY
-        pr_info("ARDY HANDLER.\n");
-
+    if (irq & I2C_IRQ_ARDY) // ACCESS READY
+    {
         // Clears ACK irq enable
         iowrite32(I2C_IRQENABLE_CLR_ACK, i2c_ptr + I2C_REG_IRQENABLE_CLR);
         
@@ -205,7 +200,6 @@ int i2c_init(struct platform_device *pdev) {
     }
     pr_info("%s: i2c_ptr: 0x%X\n", DRIVER_NAME, (unsigned int)i2c_ptr);
 
-
     // -------------------------
     // Pinmux configuration
     // -------------------------
@@ -226,7 +220,7 @@ int i2c_init(struct platform_device *pdev) {
     iowrite32(0x0, i2c_ptr + I2C_REG_CON); 
 
     // Clock Configuration
-    iowrite32(I2C_PSC_12MHZ, i2c_ptr + I2C_REG_PSC);
+    iowrite32(I2C_PSC_24MHZ, i2c_ptr + I2C_REG_PSC);
     iowrite32(I2C_SCLL_400K, i2c_ptr + I2C_REG_SCLL); 
     iowrite32(I2C_SCLH_400K, i2c_ptr + I2C_REG_SCLH); 
 
@@ -325,16 +319,14 @@ int i2c_write(char slave_address, char* data, char size)
     __set_slave_address(slave_address);
     
     // Load the data structures and registers.
-    pr_info("Configurando data structures\n");
     __clean_data_i2c();
     memcpy(data_i2c.buff_tx, data, size);
     data_i2c.buff_tx_len = size;
 
     // Load I2C DATA & CNT registers
-    iowrite32(data_i2c.buff_tx_len,              i2c_ptr + I2C_REG_CNT);
+    iowrite32(data_i2c.buff_tx_len, i2c_ptr + I2C_REG_CNT);
 
     // Sets I2C CONFIG register w/ Master TX (=0x8600)
-    pr_info("Seteo modo tx\n");
     iowrite32(I2C_BIT_ENABLE | I2C_BIT_MASTER_MODE | I2C_BIT_TX, i2c_ptr + I2C_REG_CON);
 
     // Clear IRQ Flags
@@ -342,27 +334,20 @@ int i2c_write(char slave_address, char* data, char size)
     iowrite32(I2C_IRQSTATUS_CLR_ALL, i2c_ptr + I2C_REG_IRQSTATUS);
 
     // Enables ACK interrupt
-    pr_info("Habilito interrupcion de TX\n");
     iowrite32(I2C_IRQ_XRDY, i2c_ptr + I2C_REG_IRQENABLE_SET);
-    // iowrite32(I2C_IRQ_XRDY, i2c_ptr + I2C_REG_IRQENABLE_SET);
 
     // Check irq status (occupied or free)
-    pr_info("Espero a que el bus este libre\n");
     while (ioread32(i2c_ptr + I2C_REG_IRQSTATUS_RAW) & I2C_IRQ_BB) {msleep(1);}
 
     // Sends START
     sleeping_condition = 0;     // We need to ensure the condition before sending the start
 
-    pr_info("Condicion de start\n");
     auxReg = ioread32(i2c_ptr + I2C_REG_CON); 
     auxReg |= I2C_BIT_START;
     iowrite32(auxReg, i2c_ptr + I2C_REG_CON);
 
     // Sends process to sleep
-    pr_info("proceso a mimir\n");
     wait_event_interruptible (waiting_queue, sleeping_condition != 0);
-
-    pr_info("%s: sigue bob\n", DRIVER_NAME);
 
     // We clear the start bit and sets the stop
     auxReg = ioread32(i2c_ptr + I2C_REG_CON);
@@ -415,37 +400,30 @@ int i2c_read(char slave_address, char* read_buff, char size)
     __set_slave_address(slave_address);
     
     // Load the data structures and registers.
-    pr_info("Configurando data structures\n");
     __clean_data_i2c();
     data_i2c.buff_rx_len = size;
 
     // Load I2C DATA & CNT registers
-    pr_info("Caro cantidad de datos a recibir.\n");
     iowrite32(data_i2c.buff_rx_len,              i2c_ptr + I2C_REG_CNT);
 
 
     // Sets I2C CONFIG register w/ Master RX (=0x8400)
-    pr_info("Seteo modo rx\n");
     iowrite32(I2C_BIT_ENABLE | I2C_BIT_MASTER_MODE, i2c_ptr + I2C_REG_CON); // (RX is enable with 0 at I2C_BIT_TX)
 
     // Enables ACK interrupt
-    pr_info("Habilito interrupcion de RX\n");
     iowrite32(I2C_IRQ_RRDY, i2c_ptr + I2C_REG_IRQENABLE_SET);
 
     // Check irq status (occupied or free)
-    pr_info("Espero a que el bus este libre\n");
     while (ioread32(i2c_ptr + I2C_REG_IRQSTATUS_RAW) & I2C_IRQ_BB) {msleep(1);}
 
     // Sends START
     sleeping_condition = 0;     // We need to ensure the condition before sending the start
 
-    pr_info("Condicion de start\n");
     auxReg = ioread32(i2c_ptr + I2C_REG_CON); 
     auxReg |= I2C_BIT_START;
     iowrite32(auxReg, i2c_ptr + I2C_REG_CON);
 
     // Sends process to sleep
-    pr_info("Proceso a mimir\n");
     wait_event_interruptible (waiting_queue, sleeping_condition != 0);
 
     // We clear the start bit and sets the stop
@@ -492,7 +470,6 @@ int i2c_read_reg(char slave_address, char reg_address, char* read_buff)
     __set_slave_address(slave_address);
     
     // Load the data structures and registers.
-    pr_info("Configurando data structures\n");
     __clean_data_i2c();
     data_i2c.buff_rx_len = 1;
 
@@ -501,7 +478,6 @@ int i2c_read_reg(char slave_address, char reg_address, char* read_buff)
     iowrite32(1, i2c_ptr + I2C_REG_CNT);
 
     // Sets I2C CONFIG register w/ Master TX (=0x8600)
-    pr_info("Seteo modo tx\n");
     iowrite32(I2C_BIT_ENABLE | I2C_BIT_MASTER_MODE | I2C_BIT_TX, i2c_ptr + I2C_REG_CON);
 
     // Clear IRQ Flags
@@ -509,23 +485,19 @@ int i2c_read_reg(char slave_address, char reg_address, char* read_buff)
     iowrite32(I2C_IRQSTATUS_CLR_ALL, i2c_ptr + I2C_REG_IRQSTATUS);
 
     // Enables ACK interrupt
-    pr_info("Habilito interrupcion de ACK\n");
     iowrite32(I2C_IRQ_ARDY, i2c_ptr + I2C_REG_IRQENABLE_SET);
 
     // Check irq status (occupied or free)
-    pr_info("Espero a que el bus este libre\n");
     while (ioread32(i2c_ptr + I2C_REG_IRQSTATUS_RAW) & I2C_IRQ_BB) {msleep(1);}
 
     // Sends START
     sleeping_condition = 0;     // We need to ensure the condition before sending the start
 
-    pr_info("Condicion de start\n");
     auxReg = ioread32(i2c_ptr + I2C_REG_CON); 
     auxReg |= I2C_BIT_START;
     iowrite32(auxReg, i2c_ptr + I2C_REG_CON);
 
     // Sends process to sleep
-    pr_info("proceso a mimir\n");
     wait_event_interruptible (waiting_queue, sleeping_condition != 0);
 
     // We clear the start bit and sets the stop
