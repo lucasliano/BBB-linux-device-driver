@@ -47,6 +47,33 @@ THE SOFTWARE.
     #error DMP is not supported yet
 #endif
 
+// Data conversion
+#define GRAVITIY_MS2                    9.80665
+
+// Hay que dividir por 1 estos valores para convertirlos en float
+#define ACCEL_SCALE_MODIFIER_2G         16384
+#define ACCEL_SCALE_MODIFIER_4G         8192
+#define ACCEL_SCALE_MODIFIER_8G         4096
+#define ACCEL_SCALE_MODIFIER_16G        2048
+
+// Hay que dividir por 10 estos valores para convertirlos en float
+#define GYRO_SCALE_MODIFIER_250DEG      1310
+#define GYRO_SCALE_MODIFIER_500DEG      655
+#define GYRO_SCALE_MODIFIER_1000DEG     328
+#define GYRO_SCALE_MODIFIER_2000DEG     164
+
+#define ACCEL_RANGE_2G                  0x00
+#define ACCEL_RANGE_4G                  0x08
+#define ACCEL_RANGE_8G                  0x10
+#define ACCEL_RANGE_16G                 0x18
+
+#define GYRO_RANGE_250DEG               0x00
+#define GYRO_RANGE_500DEG               0x08
+#define GYRO_RANGE_1000DEG              0x10
+#define GYRO_RANGE_2000DEG              0x18
+
+
+
 #define MPU6050_ADDRESS_AD0_LOW     0x68 // address pin low (GND), default for InvenSense evaluation board
 #define MPU6050_ADDRESS_AD0_HIGH    0x69 // address pin high (VCC)
 #define MPU6050_DEFAULT_ADDRESS     MPU6050_ADDRESS_AD0_LOW
@@ -588,14 +615,14 @@ bool MPU6050_getIntDataReadyStatus(void);
 
 // ACCEL_*OUT_* registers
 void MPU6050_getMotion9(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz, int16_t* mx, int16_t* my, int16_t* mz);
-void MPU6050_getMotion6(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz);
+void MPU6050_getMotion6(uint16_t* ax, uint16_t* ay, uint16_t* az, uint16_t* gx, uint16_t* gy, uint16_t* gz);
 void MPU6050_getAcceleration(int16_t* x, int16_t* y, int16_t* z);
 int16_t MPU6050_getAccelerationX(void);
 int16_t MPU6050_getAccelerationY(void);
 int16_t MPU6050_getAccelerationZ(void);
 
 // TEMP_OUT_* registers
-int16_t MPU6050_getTemperature(void);
+uint16_t MPU6050_getTemperature(void);
 
 // GYRO_*OUT_* registers
 void MPU6050_getRotation(int16_t* x, int16_t* y, int16_t* z);

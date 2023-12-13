@@ -194,16 +194,11 @@ int MPU6050_init(struct platform_device * i2c_plat_dev)
     int i;
 
     MPU6050(0x68);
+    if (!MPU6050_testConnection())
+        return retVal;
+
+    MPU6050_reset();
     MPU6050_initialize();
-
-
-    pr_info("MPU6050: Reading internal sensor offsets...\n");
-    pr_info("MPU6050: %d\n", MPU6050_getXAccelOffset());
-    pr_info("MPU6050: %d\n", MPU6050_getYAccelOffset());
-    pr_info("MPU6050: %d\n", MPU6050_getZAccelOffset());
-    pr_info("MPU6050: %d\n", MPU6050_getXGyroOffset());
-    pr_info("MPU6050: %d\n", MPU6050_getYGyroOffset());
-    pr_info("MPU6050: %d\n", MPU6050_getZGyroOffset());
 
     pr_info("MPU6050: Getting some samples...\n");
 
@@ -218,10 +213,7 @@ int MPU6050_init(struct platform_device * i2c_plat_dev)
 
     pr_info("MPU6050 - DEV ID: %d\n", MPU6050_getDeviceID());
 
-    if (MPU6050_testConnection())
-        return 0;
-
-    return retVal;
+    return 0;
 }
 
 void MPU6050_deinit(void)
@@ -1920,14 +1912,15 @@ void MPU6050_getMotion9(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int1
  * @see getRotation()
  * @see MPU6050_RA_ACCEL_XOUT_H
  */
-void MPU6050_getMotion6(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz) {
+void MPU6050_getMotion6(uint16_t* ax, uint16_t* ay, uint16_t* az, uint16_t* gx, uint16_t* gy, uint16_t* gz) {
+    MPU6050_setSleepEnabled(0);
     MPU6050_readBytes(mpu6050.devAddr, MPU6050_RA_ACCEL_XOUT_H, 14, mpu6050.buffer);
-    *ax = (((int16_t)mpu6050.buffer[0]) << 8) | mpu6050.buffer[1];
-    *ay = (((int16_t)mpu6050.buffer[2]) << 8) | mpu6050.buffer[3];
-    *az = (((int16_t)mpu6050.buffer[4]) << 8) | mpu6050.buffer[5];
-    *gx = (((int16_t)mpu6050.buffer[8]) << 8) | mpu6050.buffer[9];
-    *gy = (((int16_t)mpu6050.buffer[10]) << 8) | mpu6050.buffer[11];
-    *gz = (((int16_t)mpu6050.buffer[12]) << 8) | mpu6050.buffer[13];
+    *ax = (((uint16_t)mpu6050.buffer[0]) << 8) | mpu6050.buffer[1];
+    *ay = (((uint16_t)mpu6050.buffer[2]) << 8) | mpu6050.buffer[3];
+    *az = (((uint16_t)mpu6050.buffer[4]) << 8) | mpu6050.buffer[5];
+    *gx = (((uint16_t)mpu6050.buffer[8]) << 8) | mpu6050.buffer[9];
+    *gy = (((uint16_t)mpu6050.buffer[10]) << 8) | mpu6050.buffer[11];
+    *gz = (((uint16_t)mpu6050.buffer[12]) << 8) | mpu6050.buffer[13];
 }
 /** Get 3-axis accelerometer readings.
  * These registers store the most recent accelerometer measurements.
@@ -2005,9 +1998,9 @@ int16_t MPU6050_getAccelerationZ(void) {
  * @return Temperature reading in 16-bit 2's complement format
  * @see MPU6050_RA_TEMP_OUT_H
  */
-int16_t MPU6050_getTemperature(void) {
+uint16_t MPU6050_getTemperature(void) {
     MPU6050_readBytes(mpu6050.devAddr, MPU6050_RA_TEMP_OUT_H, 2, mpu6050.buffer);
-    return (((int16_t)mpu6050.buffer[0]) << 8) | mpu6050.buffer[1];
+    return (((uint16_t)mpu6050.buffer[0]) << 8) | mpu6050.buffer[1];
 }
 
 // GYRO_*OUT_* registers

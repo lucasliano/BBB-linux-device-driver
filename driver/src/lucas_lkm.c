@@ -4,13 +4,6 @@
  * Platform Driver - Methods
 ******************************************************************************/
 
-/******************************************************************************
- * Device tree functions
-******************************************************************************/
-
-
-
-
 /// @brief This function is called when a device matches the "compatible"
 ///  property in the device tree.
 /// @param pdev Reference to the device tree.
@@ -28,10 +21,10 @@ static int i2c_probe(struct platform_device * i2c_plat_dev)
         pr_warn("%s: PROBE - Error while running mpu6050_init().\n", DRIVER_NAME);
         goto mpu6050_error;
     }
-    // if ((status = char_device_create()) != 0) {
-    //     pr_warn("%s: PROBE - Error while running char_device_create().\n", DRIVER_NAME);
-    //     goto char_device_error;
-    // }
+    if ((status = char_device_create()) != 0) {
+        pr_warn("%s: PROBE - Error while running char_device_create().\n", DRIVER_NAME);
+        goto char_device_error;
+    }
     return 0;
 
     char_device_error: MPU6050_deinit();

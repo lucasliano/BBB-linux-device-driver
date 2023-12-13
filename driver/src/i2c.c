@@ -360,8 +360,7 @@ int i2c_write(char slave_address, char* data, char size)
     mutex_unlock(&lock_bus);
     if (sleeping_condition > 0)
         retval = 0;
-    
-    pr_info("%s: Finaliza escritura\n", DRIVER_NAME);
+
     return retval;
 }
 
@@ -440,8 +439,7 @@ int i2c_read(char slave_address, char* read_buff, char size)
         memcpy(read_buff, data_i2c.buff_rx, size);
         retval = 0;
     }
-    
-    pr_info("%s: Finaliza lectura\n", DRIVER_NAME);
+ 
     return retval;
 }
 
@@ -514,7 +512,6 @@ int i2c_read_reg(char slave_address, char reg_address, char* read_buff)
         memcpy(read_buff, data_i2c.buff_rx, 1);
         retval = 0;
     }
-    
-    pr_info("%s: Finaliza lectura\n", DRIVER_NAME);
+
     return retval;
 }
