@@ -6,6 +6,8 @@
     lliano_overlay_dtb_timestamp = "Wed Nov  29 15:52:05 2023";
 };
 
+
+// I2C1 pins as I2C by default
 &am33xx_pinmux {
     pinmux_P9_17_default_pin {
         pinctrl-single,pins = <0x15c 0x32>;
@@ -35,12 +37,10 @@
         compatible = "lliano,i2c";
         status = "okay";
         
-        // Nico
         pinmux = <&am33xx_pinmux>;          // phandle to pin mux
         pins = <0x154 0x32 0x150 0x32>;     // <PIN_OFFSET PIN_MODE>
         int-clock-frequency = <12000000>;   // internal clock frequency 12MHz
 
-        // Default
         reg = <0x00 0x1000>;
         interrupts = <0x1e>;
         pinctrl-names = "default";

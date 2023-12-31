@@ -194,6 +194,8 @@ int MPU6050_init(struct platform_device * i2c_plat_dev)
     int i;
 
     MPU6050(0x68);
+    pr_info("MPU6050: Testing connection...\n");
+
     if (!MPU6050_testConnection())
         return retVal;
 

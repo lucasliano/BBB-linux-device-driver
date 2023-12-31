@@ -323,7 +323,7 @@ int i2c_write(char slave_address, char* data, char size)
     memcpy(data_i2c.buff_tx, data, size);
     data_i2c.buff_tx_len = size;
 
-    // Load I2C DATA & CNT registers
+    // Load I2C CNT registers
     iowrite32(data_i2c.buff_tx_len, i2c_ptr + I2C_REG_CNT);
 
     // Sets I2C CONFIG register w/ Master TX (=0x8600)
